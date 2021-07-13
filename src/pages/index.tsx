@@ -10,6 +10,14 @@ import { api } from '../services/api';
 import { Loading } from '../components/Loading';
 import { Error } from '../components/Error';
 
+interface Card {
+  title: string;
+  description: string;
+  url: string;
+  ts: number;
+  id: string;
+}
+
 export default function Home(): JSX.Element {
   async function getImage({ pageParam = null }) {
     const { data } = await api.get('/api/images', {
@@ -31,7 +39,15 @@ export default function Home(): JSX.Element {
   });
 
   const formattedData = useMemo(() => {
-    return data?.pages;
+    let formattedDataTotal = [] as Card[];
+    const dataPages = data?.pages;
+
+    dataPages?.map(page => {
+      formattedDataTotal = [...formattedDataTotal, ...page.data];
+      return;
+    });
+
+    return formattedDataTotal;
   }, [data]);
 
   if(isLoading) {
